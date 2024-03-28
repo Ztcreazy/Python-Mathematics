@@ -307,3 +307,4 @@ def update(t_ind):
 anim = FuncAnimation(fig, update, frames=n_steps, repeat=False)
 gif_writer = ImageMagickWriter(fps=20)
 anim.save('anim_dip.gif', writer=gif_writer)
+
