@@ -24,7 +24,7 @@ import os
 from environment import CarEnv
 import time
 
-print('This is the start of training script')
+print('This is the start of training script') 
 
 print('setting folders for logs and models')
 models_dir = f"CarlaRL/RL_Full_Tutorial/models/{int(time.time())}/"
