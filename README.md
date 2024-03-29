@@ -1,1 +1,1 @@
-Python Mathematics Planning Control
+Python Mathematics Optimization Planning Control
