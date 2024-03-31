@@ -76,23 +76,23 @@ class CarEnv(gym.Env):
 		steer = action[0]
 		throttle = action[1]
 		# map steering actions
-		if steer ==0:
+		if steer == 0:
 			steer = - 0.9
-		elif steer ==1:
+		elif steer == 1:
 			steer = -0.25
-		elif steer ==2:
+		elif steer == 2:
 			steer = -0.1
-		elif steer ==3:
+		elif steer == 3:
 			steer = -0.05
-		elif steer ==4:
+		elif steer == 4:
 			steer = 0.0 
-		elif steer ==5:
+		elif steer == 5:
 			steer = 0.05
-		elif steer ==6:
+		elif steer == 6:
 			steer = 0.1
-		elif steer ==7:
+		elif steer == 7:
 			steer = 0.25
-		elif steer ==8:
+		elif steer == 8:
 			steer = 0.9
 		# map throttle and apply steer and throttle	
 		if throttle == 0:
@@ -148,16 +148,16 @@ class CarEnv(gym.Env):
 		#reward for acceleration
 		if kmh < 10:
 			reward = reward - 3
-		elif kmh <15:
+		elif kmh < 15:
 			reward = reward -1
-		elif kmh>40:
+		elif kmh > 40:
 			reward = reward - 10 #punish for going to fast
 		else:
 			reward = reward + 1
 		# reward for making distance
-		if distance_travelled<30:
+		if distance_travelled < 30:
 			reward = reward - 1
-		elif distance_travelled<50:
+		elif distance_travelled < 50:
 			reward =  reward + 1
 		else:
 			reward = reward + 2
