@@ -26,7 +26,7 @@ model.learn(total_timesteps=1000)
 
 episodes = 10
 
-for episode in episodes:
+for i in episodes:
     obs = env.reset()
     terminated = False
     while not terminated:

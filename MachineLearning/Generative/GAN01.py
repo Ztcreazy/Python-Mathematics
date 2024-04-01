@@ -161,6 +161,11 @@ def train(epochs, batch_size=128, save_interval=50):
 #sample_image function. Which looks as follows.
 
 def save_imgs(epoch):
+
+    folder_path = 'MachineLearning/Generative/Images'
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
     r, c = 5, 5
     noise = np.random.normal(0, 1, (r * c, 100))
     gen_imgs = generator.predict(noise)
@@ -175,7 +180,9 @@ def save_imgs(epoch):
             axs[i,j].imshow(gen_imgs[cnt, :,:,0], cmap='gray')
             axs[i,j].axis('off')
             cnt += 1
-    fig.savefig("MachineLearning/Generative/images/mnist_%d.png" % epoch)
+    
+    plt.savefig(os.path.join(folder_path, f'mnist_%d.png' % epoch))
+    # fig.savefig("images/mnist_%d.png" % epoch)
     plt.close()
 #This function saves our images for us to view
 
@@ -234,7 +241,7 @@ train(epochs=100, batch_size=32, save_interval=10)
 #Not tested yet... make sure right model is being saved..
 #Compare with GAN4
 
-generator.save('generator_model.h5')  #Test the model on GAN4_predict...
+generator.save('MachineLearning/Generative/generator_model.h5')  #Test the model on GAN4_predict...
 #Change epochs back to 30K
                 
 #Epochs dictate the number of backward and forward propagations, the batch_size

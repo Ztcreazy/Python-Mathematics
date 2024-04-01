@@ -17,7 +17,7 @@ def run(is_training=True, render=False):
     if(is_training):
         q = np.zeros((len(pos_space)+1, len(vel_space)+1, len(ang_space)+1, len(ang_vel_space)+1, env.action_space.n)) # init a 11x11x11x11x2 array
     else:
-        f = open('Machine Learning/CartPendulum/cartpole.pkl', 'rb')
+        f = open('MachineLearning/CartPendulum/cartpole.pkl', 'rb')
         q = pickle.load(f)
         f.close()
 
@@ -92,7 +92,7 @@ def run(is_training=True, render=False):
 
     # Save Q table to file
     if is_training:
-        f = open('Machine Learning/CartPendulum/cartpole.pkl','wb')
+        f = open('MachineLearning/CartPendulum/cartpole.pkl','wb')
         pickle.dump(q, f)
         f.close()
 
@@ -101,7 +101,7 @@ def run(is_training=True, render=False):
         mean_rewards.append(np.mean(rewards_per_episode[max(0, t-100):(t+1)]))
     plt.plot(mean_rewards)
     
-    folder_path = 'Machine Learning/CartPendulum'
+    folder_path = 'MachineLearning/CartPendulum'
     plt.savefig(os.path.join(folder_path,f'cartpole.png'))
 
 if __name__ == '__main__':
