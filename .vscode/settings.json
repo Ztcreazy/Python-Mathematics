@@ -1,5 +1,8 @@
 {
     "python.analysis.extraPaths": [
         "./PythonRobotics/Planning"
+    ],
+    "python.autoComplete.extraPaths": [
+        "C:/Users/14404/OneDrive/Desktop/PythonMathematics/PythonRobotics/utils"
     ]
 }
