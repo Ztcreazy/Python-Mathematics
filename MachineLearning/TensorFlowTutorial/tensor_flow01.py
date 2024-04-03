@@ -7,7 +7,7 @@ print("Num CPUs Available: ", len(tf.config.list_physical_devices('CPU')))
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 
-physical_devices = tf.config.list_physical_devices('GPU')
+# physical_devices = tf.config.list_physical_devices('GPU')
 # tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 # Initialization of tensor
@@ -38,3 +38,20 @@ z = tf.tensordot(a,b, axes = 1) # vector matrix
 # z = tf.reduce_sum(a * b, axis=0)
 z = a **3
 print(z)
+
+c = tf.random.normal((2,3))
+d = tf.random.normal((3,4))
+
+t = tf.matmul(c, d)
+print("matmul: ", t)
+t = c @ d
+print("c @ d: ", t)
+print("-"*49)
+
+# Reshape
+m = tf.range(9)
+print(m)
+n = tf.reshape(m, (3,3))
+print(n)
+n_T = tf.transpose(n, perm=[1,0])
+print(n_T)
