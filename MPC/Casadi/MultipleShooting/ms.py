@@ -138,3 +138,4 @@ if __name__ == '__main__':
 
     draw_result = Draw_MPC_point_stabilization_v1(
         rob_diam=0.3, init_state=x0_, target_state=xs, robot_states=xx)
+    
