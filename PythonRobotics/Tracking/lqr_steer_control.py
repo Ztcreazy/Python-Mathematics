@@ -14,7 +14,7 @@ import sys
 sys.path.append('C:/Users/14404/OneDrive/Desktop/PythonMathematics/PythonRobotics/Planning')
 
 try:
-    import cubic_spline_planner
+    import CubicSpline.cubic_spline_planner as cubic_spline_planner
 except:
     raise
 

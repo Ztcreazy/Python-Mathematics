@@ -8,8 +8,8 @@ author: Atsushi Sakai
 from matplotlib import pyplot as plt
 import numpy as np
 import math
-import model_predictive_trajectory_generator as planner
-import motion_model
+import trajectory_generator as planner
+import MotionModel
 import pandas as pd
 
 
@@ -76,7 +76,7 @@ def generate_lookup_table():
         bestp = search_nearest_one_from_lookuptable(
             state[0], state[1], state[2], lookuptable)
 
-        target = motion_model.State(x=state[0], y=state[1], yaw=state[2])
+        target = MotionModel.State(x=state[0], y=state[1], yaw=state[2])
         init_p = np.array(
             [math.sqrt(state[0] ** 2 + state[1] ** 2), bestp[4], bestp[5]]).reshape(3, 1)
 
@@ -89,13 +89,13 @@ def generate_lookup_table():
 
     print("finish lookup table generation")
 
-    save_lookup_table("lookuptable.csv", lookuptable)
+    save_lookup_table("C:/Users/14404/OneDrive/Desktop/PythonMathematics/PythonRobotics/Planning/MPC/lookuptable.csv", lookuptable)
 
     for table in lookuptable:
-        xc, yc, yawc = motion_model.generate_trajectory(
+        xc, yc, yawc = MotionModel.generate_trajectory(
             table[3], table[4], table[5], k0)
         plt.plot(xc, yc, "-r")
-        xc, yc, yawc = motion_model.generate_trajectory(
+        xc, yc, yawc = MotionModel.generate_trajectory(
             table[3], -table[4], -table[5], k0)
         plt.plot(xc, yc, "-r")
 
