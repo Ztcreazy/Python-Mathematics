@@ -71,7 +71,7 @@ if __name__ == '__main__':
     opti.subject_to(opti.bounded(-v_max, v, v_max))
     opti.subject_to(opti.bounded(-omega_max, omega, omega_max))
 
-    opts_setting = {'ipopt.max_iter':100, 'ipopt.print_level':0, 'print_time':0, 'ipopt.acceptable_tol':1e-8, 'ipopt.acceptable_obj_change_tol':1e-6}
+    opts_setting = {'ipopt.max_iter':100, 'ipopt.print_level':5, 'print_time':0, 'ipopt.acceptable_tol':1e-8, 'ipopt.acceptable_obj_change_tol':1e-6}
 
     opti.solver('ipopt', opts_setting)
     final_state = np.array([1.5, 1.5, 0.0])

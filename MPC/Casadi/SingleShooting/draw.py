@@ -76,7 +76,7 @@ class Draw_MPC_Obstacle(object):
 
         plt.grid('--')
         if export_fig:
-            self.ani.save('C:/Users/14404/OneDrive/Desktop/PythonMathematics/MPC/Casadi/SingleShooting/obstacle.gif', writer='imagemagick', fps=100)
+            self.ani.save('C:/Users/14404/OneDrive/Desktop/PythonMathematics/MPC/Casadi/Avoid/obstacle.gif', writer='imagemagick', fps=100)
         plt.show()
 
     def animation_init(self):
@@ -124,7 +124,7 @@ class Draw_MPC_tracking(object):
 
         plt.grid('--')
         if export_fig:
-            self.ani.save('C:/Users/14404/OneDrive/Desktop/PythonMathematics/MPC/Casadi/SingleShooting/tracking.gif', writer='imagemagick', fps=100)
+            self.ani.save('C:/Users/14404/OneDrive/Desktop/PythonMathematics/MPC/Casadi/Avoid/tracking.gif', writer='imagemagick', fps=100)
         plt.show()
 
     def animation_init(self, ):

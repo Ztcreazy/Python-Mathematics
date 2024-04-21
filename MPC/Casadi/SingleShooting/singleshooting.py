@@ -78,6 +78,7 @@ if __name__ == "__main__":
     # Simulation
     lbg = -2.0
     ubg = 2.0
+
     lbx = []
     ubx = []
     for _ in range(N):
@@ -85,6 +86,7 @@ if __name__ == "__main__":
         ubx.append(v_max)
         lbx.append(-omega_max)
         ubx.append(omega_max)
+    
     t0 = 0.0
     x0 = np.array([0.0, 0.0, 0.0]).reshape(-1, 1)# initial state
     xs = np.array([1.5, 1.5, 0.0]).reshape(-1, 1) # final state

@@ -58,6 +58,7 @@ if __name__ == '__main__':
     R = np.array([[0.5, 0.0], [0.0, 0.05]])
     # cost function
     obj = 0  # cost
+
     g = []  # equal constrains
     g.append(X[:, 0]-P[:3])
     for i in range(N):
@@ -79,11 +80,15 @@ if __name__ == '__main__':
     lbx = []
     ubx = []
 
+    # opt_variables = ca.vertcat(ca.reshape(U, -1, 1), ca.reshape(X, -1, 1))
+    # ca.reshape(U, -1, 1)
     for _ in range(N):
         lbx.append(-v_max)
         lbx.append(-omega_max)
         ubx.append(v_max)
         ubx.append(omega_max)
+    
+    # ca.reshape(X, -1, 1)
     for _ in range(N+1):  # note that this is different with the method using structure
         lbx.append(-2.0)
         lbx.append(-2.0)
