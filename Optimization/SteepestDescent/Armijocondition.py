@@ -1,5 +1,5 @@
 import numpy as np
-# https://towardsdatascience.com/implementing-the-steepest-descent-algorithm-in-python-from-scratch-d32da2906fe2#e046
+import matplotlib.pyplot as plt
 
 def f(x):
     """
@@ -18,31 +18,33 @@ from scipy.optimize import minimize
 result = minimize(
     f, np.zeros(2), method='trust-constr', jac=df)
 
-print(result.x) 
+result.x
 
-import matplotlib.pyplot as plt
-
-# -10 ----> 10
-X,Y = np.meshgrid(np.linspace(-15,15,100), np.linspace(-15,15,100))
+# Prepare the objective function between -10 and 10
+X, Y = np.meshgrid(np.linspace(-10, 10, 20), np.linspace(-10, 10, 20))
 Z = f(np.array([X, Y]))
 
+# Minimizer
 min_x0, min_x1 = np.meshgrid(result.x[0], result.x[1])   
 min_z = f(np.stack([min_x0, min_x1]))
 
-fig = plt.figure(figsize=(12, 6))
-# plt.show()
 
+# Plot
+fig = plt.figure(figsize=(12, 6))
+
+# First subplot
 ax = fig.add_subplot(1, 2, 1, projection='3d')
 ax.contour3D(X, Y, Z, 60, cmap='viridis')
-ax.scatter(min_x0, min_x1, min_z, marker='o', color='red', linewidth=5)
+ax.scatter(min_x0, min_x1, min_z, marker='o', color='red', linewidth=10)
 ax.set_xlabel('$x_{0}$')
 ax.set_ylabel('$x_{1}$')
 ax.set_zlabel('$f(x)$')
-ax.view_init(45, 30)
+ax.view_init(40, 20)
 
+# Second subplot
 ax = fig.add_subplot(1, 2, 2, projection='3d')
 ax.contour3D(X, Y, Z, 60, cmap='viridis')
-ax.scatter(min_x0, min_x1, min_z, marker='o', color='red', linewidth=5)
+ax.scatter(min_x0, min_x1, min_z, marker='o', color='red', linewidth=10)
 ax.set_xlabel('$x_{0}$')
 ax.set_ylabel('$x_{1}$')
 ax.set_zlabel('$f(x)$')
@@ -51,24 +53,69 @@ ax.view_init(90, -90)
 
 plt.show()
 
+"""
+x_k+1 = x_k + alpha_k * p_k
+x_k+1 = x_k - alpha_k * delta_f(x_k) gradient, derivative
+
+alpha: g(alpha) 
+min_alpha ----> g(alpha) = f(x_k + alpha_k * p_k)
+min_x ----> f(x)
+
+Wolfe conditions: https://en.wikipedia.org/wiki/Wolfe_conditions
+(1) f(x_k + alpha_k * p_k) <= f(x_k) + c1 * alpha * delta_f(x_k).T * p_k
+(2) -p_k.T * delta_f(x_k + alpha_k * p_k) <= -c2 * p_k.T * delta_f(x_k)
+0 < c1 < c2 < 1
+c1: 10^-4
+c2 = 0.9 (Newton or quasi-Newton methods) 
+c2 = 0.1 (nonlinear conjugate gradient method)
+"""
 
 
-def steepest_descent(gradient, x0 = np.zeros(2), alpha = 0.01, max_iter = 10000, tolerance = 1e-10): 
+
+def line_search(step, x, gradient_x, c = 1e-4, tol = 1e-8):
     '''
-    Steepest descent with constant step size alpha.
+    Inexact line search where the step length is updated through the Armijo condition:
+    $ f (x_k + alpha * p_k ) ≤ f ( x_k ) + c * alpha * ∇ f_k^T * p_k $
+
+    Args:
+      - step: starting alpha value
+      - x: current point
+      - gradient_x: gradient of the current point
+      - c: constant value (default: 1e-4)
+      - tol: tolerance value (default: 1e-6)
+    Out:
+      - New value of step: the first value found respecting the Armijo condition
+    '''
+    f_x = f(x)
+    gradient_square_norm = np.linalg.norm(gradient_x)**2
+    
+    # Until the sufficient decrease condition is met 
+    while f(x - step * gradient_x) >= (f_x - c * step * gradient_square_norm):
+        
+        # Update the stepsize (backtracking)
+        step /= 2
+        
+        # If the step size falls below a certain tolerance, exit the loop
+        if step < tol:
+            break
+    
+    return step
+
+def steepest_descent(gradient, x0 = np.zeros(2), max_iter = 10000, tolerance = 1e-10): 
+    '''
+    Steepest descent with alpha updated through line search (Armijo condition).
     
     Args:
       - gradient: gradient of the objective function
-      - alpha: line search parameter (default: 0.01)
       - x0: initial guess for x_0 and x_1 (default values: zero) <numpy.ndarray>
       - max_iter: maximum number of iterations (default: 10000)
       - tolerance: minimum gradient magnitude at which the algorithm stops (default: 1e-10)
     
     Out:
-      - results: <numpy.ndarray> of size (n_iter, 2) with x_0 and x_1 values at each iteration
+      - results: <numpy.ndarray> with x_0 and x_1 values at each iteration
       - number of steps: <int>
     '''
-    # print("alpha: ", alpha)
+    
     # Prepare list to store results at each iteration 
     results = np.array([])
     
@@ -88,7 +135,7 @@ def steepest_descent(gradient, x0 = np.zeros(2), alpha = 0.01, max_iter = 10000,
 
         # Update the step size through the Armijo condition
         # Note: the first value of alpha is commonly set to 1
-        #alpha = line_search(1, x, gradient_x)
+        alpha = line_search(1, x, gradient_x)
         
         # Update the current point by moving in the direction of the negative gradient 
         x = x - alpha * gradient_x
@@ -105,95 +152,45 @@ def steepest_descent(gradient, x0 = np.zeros(2), alpha = 0.01, max_iter = 10000,
     # Return the steps taken and the number of steps
     return results.reshape(-1, 2), steps_count
 
+
+
+# Steepest descent
 points, iters = steepest_descent(
-  df, x0 = np.array([-9, -9]), alpha=0.30)
+  df, x0 = np.array([-9, -9]))
 
-
-
+# Found minimizer
 minimizer = points[-1].round(1)
 
+# Print results
 print('- Final results: {}'.format(minimizer))
 print('- N° steps: {}'.format(iters))
 
+# Steepest descent steps
 X_estimate, Y_estimate = points[:, 0], points[:, 1] 
 Z_estimate = f(np.array([X_estimate, Y_estimate]))
 
+# Plot
 fig = plt.figure(figsize=(12, 6))
 
+# First subplot
 ax = fig.add_subplot(1, 2, 1, projection='3d')
 ax.contour3D(X, Y, Z, 60, cmap='viridis')
 ax.plot(X_estimate, Y_estimate, Z_estimate, color='red', linewidth=3)
-ax.scatter(min_x0, min_x1, min_z, marker='o', color='red', linewidth=5)
+ax.scatter(min_x0, min_x1, min_z, marker='o', color='red', linewidth=10)
 ax.set_xlabel('$x_{0}$')
 ax.set_ylabel('$x_{1}$')
 ax.set_zlabel('$f(x)$')
-ax.view_init(45, 30)
+ax.view_init(20, 20)
 
+# Second subplot
 ax = fig.add_subplot(1, 2, 2, projection='3d')
 ax.contour3D(X, Y, Z, 60, cmap='viridis')
 ax.plot(X_estimate, Y_estimate, Z_estimate, color='red', linewidth=3)
-ax.scatter(min_x0, min_x1, min_z, marker='o', color='red', linewidth=5)
+ax.scatter(min_x0, min_x1, min_z, marker='o', color='red', linewidth=10)
 ax.set_xlabel('$x_{0}$')
 ax.set_ylabel('$x_{1}$')
 ax.set_zlabel('$f(x)$')
 ax.axes.zaxis.set_ticklabels([])
 ax.view_init(90, -90)
-
-plt.show()
-
-
-
-# convergence is not guaranteed for any value of the step size
-alphas = [0.01, 0.25, 0.3, 0.35, 0.4] # , 1.2
-
-X_estimates, Y_estimates, Z_estimates = [], [], []
-
-fig, ax = plt.subplots(len(alphas), figsize=(8, 6))
-fig.suptitle('$f(x)$ at each iteration for different $alpha$')
-
-for i, alpha in enumerate(alphas):
-
-    estimate, iters = steepest_descent(
-      df, x0 = np.array([-5, -5]), alpha=alpha, max_iter=3000)
-    
-    print('Input alpha: {}'.format(alpha))
-    print('\t- Final results: {}'.format(estimate[-1].round(1)))
-    print('\t- N° steps: {}'.format(iters))
-
-    X_estimates.append(estimate[:, 0])
-    Y_estimates.append(estimate[:, 1])  
-    Z_estimates.append(f(np.array([estimate[:, 0], estimate[:, 1]])))
-
-    ax[i].plot([f(var) for var in estimate], label='alpha: '+str(alpha))
-    ax[i].axhline(y=0, color='r', alpha=0.7, linestyle='dashed')
-    ax[i].set_xlabel('Number of iterations')
-    ax[i].set_ylabel('$f(x)$')
-    ax[i].set_ylim([-10, 200])
-    ax[i].legend(loc='upper right')
-
-fig = plt.figure(figsize=(25, 60))
-
-for i in range(0, len(alphas)):
-
-    ax = fig.add_subplot(len(alphas), 2, (i*2)+1, projection='3d')
-    ax.contour3D(X, Y, Z, 60, cmap='viridis')
-    ax.plot(X_estimates[i], Y_estimates[i], Z_estimates[i], color='red', label='alpha: '+str(alphas[i]) , linewidth=3)
-    ax.scatter(min_x0, min_x1, min_z, marker='o', color='red', linewidth=5)
-    ax.set_xlabel('$x_{0}$')
-    ax.set_ylabel('$x_{1}$')
-    ax.set_zlabel('$f(x)$')
-    ax.view_init(45, 30)
-    plt.legend(prop={'size': 15})
-
-    ax = fig.add_subplot(len(alphas), 2, (i*2)+2, projection='3d')
-    ax.contour3D(X, Y, Z, 60, cmap='viridis')
-    ax.plot(X_estimates[i], Y_estimates[i], Z_estimates[i], color='red', label='alpha: '+str(alphas[i]) , linewidth=3)
-    ax.scatter(min_x0, min_x1, min_z, marker='o', color='red', linewidth=10)
-    ax.set_xlabel('$x_{0}$')
-    ax.set_ylabel('$x_{1}$')
-    ax.set_zlabel('$f(x)$')
-    ax.axes.zaxis.set_ticklabels([])
-    ax.view_init(90, -90)
-    plt.legend(prop={'size': 15})
 
 plt.show()

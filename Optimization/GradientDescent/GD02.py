@@ -14,24 +14,24 @@ def y_derivative(x):
     # 2*x
 
 x0 = 1.2
-current_position = [x0, y_function(x0)]
+initial_position = [x0, y_function(x0)]
 
 x = np.arange(-5, 5, .01)
 y = y_function(x)
 
 # plt.plot(x,y)
-# plt.scatter(current_position[0], current_position[1], color = 'red', linewidths=3)
+# plt.scatter(initial_position[0], initial_position[1], color = 'red', linewidths=3)
 # plt.grid(True)
 # plt.show()
 
 learning_rate = 0.08
-tolerance = 1e-6
+tolerance = 1e-3
 
-for _ in range(200):
-    new_x = current_position[0] - learning_rate * y_derivative(current_position[0])
-    error = abs(new_x - current_position[0])
+for _ in range(2000):
+    new_x = initial_position[0] - learning_rate * y_derivative(initial_position[0])
+    error = abs(new_x - initial_position[0])
     new_y = y_function(new_x)
-    current_position = [new_x, new_y]
+    initial_position = [new_x, new_y]
 
     if error <= tolerance: # if new_x <= tolerance:
         print("new x: ", new_x)
@@ -39,7 +39,7 @@ for _ in range(200):
         break
 
     plt.plot(x,y)
-    plt.scatter(current_position[0], current_position[1], color = 'red', linewidths=3)
+    plt.scatter(initial_position[0], initial_position[1], color = 'red', linewidths=3)
     plt.grid(True)
     plt.pause(0.01)
     plt.clf()
