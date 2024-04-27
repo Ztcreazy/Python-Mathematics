@@ -4,5 +4,6 @@
     ],
     "python.autoComplete.extraPaths": [
         "C:/Users/14404/OneDrive/Desktop/PythonMathematics/PythonRobotics/utils"
-    ]
+    ],
+    "C_Cpp.errorSquiggles": "disabled"
 }
