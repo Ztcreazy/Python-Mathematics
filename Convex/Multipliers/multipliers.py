@@ -30,7 +30,7 @@ x = cp.Variable(shape=n)
 f = cp.norm(x, 1)
 
 # Solve with CVXPY.
-cp.Problem(cp.Minimize(f), [A@x == b]).solve()
+cp.Problem(cp.Minimize(f), [A@x == b]).solve( solver=cp.ECOS )
 print("Optimal value from CVXPY: {}".format(f.value))
 
 # Solve with method of multipliers.
@@ -40,7 +40,7 @@ y = cp.Parameter(shape=(m)); y.value = np.zeros(m)
 aug_lagr = f + y.T@resid + (rho/2)*cp.sum_squares(resid)
 
 for t in range(MAX_ITERS):
-    cp.Problem(cp.Minimize(aug_lagr)).solve() # "solver=cp.ECOS"
+    cp.Problem(cp.Minimize(aug_lagr)).solve( solver=cp.ECOS ) # "solver=cp.ECOS"
     y.value += rho*resid.value
 
 print("Optimal value from method of multipliers: {}".format(f.value))
