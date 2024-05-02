@@ -26,18 +26,22 @@ A = np.random.randn(m,n)
 b = np.random.randn(m)
 
 # Initialize problem.
-x = cp.Variable(shape=n)
+x = cp.Variable( shape=n )
 f = cp.norm(x, 1)
 
 # Solve with CVXPY.
-cp.Problem(cp.Minimize(f), [A@x == b]).solve( solver=cp.ECOS )
+cp.Problem(cp.Minimize(f), [A @ x == b]).solve( solver=cp.ECOS )
 print("Optimal value from CVXPY: {}".format(f.value))
 
 # Solve with method of multipliers.
 resid = A@x - b
 
-y = cp.Parameter(shape=(m)); y.value = np.zeros(m)
-aug_lagr = f + y.T@resid + (rho/2)*cp.sum_squares(resid)
+
+
+# !!!! L_rho(x, y) = f(x) + y.T(A *x - b) + (rho/2) *||A *x - b||_2 ^2
+# cp.Parameter 
+y = cp.Parameter( shape=(m) ); y.value = np.zeros(m)
+aug_lagr = f + y.T @ resid + (rho/2)*cp.sum_squares(resid)
 
 for t in range(MAX_ITERS):
     cp.Problem(cp.Minimize(aug_lagr)).solve( solver=cp.ECOS ) # "solver=cp.ECOS"
