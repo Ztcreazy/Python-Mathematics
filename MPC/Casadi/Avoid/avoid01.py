@@ -48,20 +48,26 @@ if __name__ == '__main__':
 
     X = ca.SX.sym('X', n_states, N+1)
 
-    P = ca.SX.sym('P', n_states+n_states)
+    P = ca.SX.sym('P', n_states + n_states)
 
 
     ### define
     Q = np.array([[1.0, 0.0, 0.0],[0.0, 5.0, 0.0],[0.0, 0.0, .1]])
     R = np.array([[0.5, 0.0], [0.0, 0.05]])
+    
     #### cost function
     obj = 0 #### cost
     g = [] # equal constrains
     g.append(X[:, 0]-P[:3])
+
     for i in range(N):
+        
         obj = obj + ca.mtimes([(X[:, i]-P[3:]).T, Q, X[:, i]-P[3:]]) + ca.mtimes([U[:, i].T, R, U[:, i]])
-        x_next_ = f(X[:, i], U[:, i])*T +X[:, i]
-        g.append(X[:, i+1]-x_next_)
+        
+        x_next_ = f(X[:, i], U[:, i])*T + X[:, i]
+        
+        g.append(X[:, i+1] - x_next_)
+    
     #### constraints
     obs_x = 1.25
     obs_y = 1.25
@@ -72,7 +78,8 @@ if __name__ == '__main__':
     
     opt_variables = ca.vertcat( ca.reshape(U, -1, 1), ca.reshape(X, -1, 1))
 
-    nlp_prob = {'f': obj, 'x': opt_variables, 'p':P, 'g':ca.vertcat(*g)}
+    nlp_prob = {'f': obj, 'x': opt_variables, 'p': P, 'g': ca.vertcat(*g)}
+
     opts_setting = {'ipopt.max_iter':100, 'ipopt.print_level':5, 'print_time':0, 'ipopt.acceptable_tol':1e-8, 'ipopt.acceptable_obj_change_tol':1e-6}
 
     solver = ca.nlpsol('solver', 'ipopt', nlp_prob, opts_setting)
@@ -113,7 +120,7 @@ if __name__ == '__main__':
 
     # Simulation
     t0 = 0.0
-    x0 = np.array([0.0, 0.0, 0.0]).reshape(-1, 1)# initial state
+    x0 = np.array([0.0, 0.0, 0.0]).reshape(-1, 1) # initial state
     x0_ = x0.copy()
     x_m = np.zeros((n_states, N+1))
     next_states = x_m.copy()
@@ -132,27 +139,40 @@ if __name__ == '__main__':
     start_time = time.time()
     index_t = []
     while(np.linalg.norm(x0-xs)>1e-2 and mpciter-sim_time/T<0.0 and mpciter<50):
+        
         ## set parameter
         c_p = np.concatenate((x0, xs))
         # print('{0}'.format(next_states))
         # print('{0}'.format(next_states.T.reshape(-1, 1)[:6]))
+        
         init_control = np.concatenate((u0.T.reshape(-1, 1), next_states.T.reshape(-1, 1)))
         t_ = time.time()
-        res = solver(x0=init_control, p=c_p, lbg=lbg, lbx=lbx, ubg=ubg, ubx=ubx)
+        
+        res = solver(x0=init_control, p = c_p, lbg=lbg, lbx=lbx, ubg=ubg, ubx=ubx)
+        
         index_t.append(time.time()- t_)
+        
         estimated_opt = res['x'].full() # the feedback is in the series [u0, x0, u1, x1, ...]
+        
         u0 = estimated_opt[:200].reshape(N, n_controls).T # (n_controls, N)
         x_m = estimated_opt[200:].reshape(N+1, n_states).T# [n_states, N]
+        
         x_c.append(x_m.T)
         u_c.append(u0[:, 0])
         t_c.append(t0)
+        
         t0, x0, u0, next_states = shift_movement(T, t0, x0, u0, x_m, f)
+        
         x0 = ca.reshape(x0, -1, 1)
         x0 = x0.full()
         xx.append(x0)
+        
         mpciter = mpciter + 1
+
     print(mpciter)
+
     t_v = np.array(index_t)
     print(t_v.mean())
     print((time.time() - start_time)/(mpciter))
+
     draw_result = Draw_MPC_Obstacle(rob_diam=0.3, init_state=x0_, target_state=xs, robot_states=xx, obstacle=np.array([obs_x, obs_y, obs_diam/2.]), export_fig=True)

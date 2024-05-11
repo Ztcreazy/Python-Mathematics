@@ -97,7 +97,7 @@ if __name__ == '__main__':
 
     for i in range(N):
         obj = obj + ca.mtimes([(X[:, i]-P[5:]).T, Q, X[:, i]-P[5:]]) + ca.mtimes([U[:, i].T, R, U[:, i]])
-        x_next_ = f(X[:, i], U[:, i])*T +X[:, i]
+        x_next_ = f(X[:, i], U[:, i])*T + X[:, i]
         g.append(X[:, i+1]-x_next_)
 
     #### constraints
