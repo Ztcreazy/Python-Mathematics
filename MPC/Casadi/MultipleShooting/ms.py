@@ -103,8 +103,10 @@ if __name__ == '__main__':
     x0_ = x0.copy()
     x_m = np.zeros((n_states, N+1))
     next_states = x_m.copy().T
-    xs = np.array([1.5, 1.5, 0.0]).reshape(-1, 1)  # final state
+
+    xs = np.array([1.5, 1.8, 0.0]).reshape(-1, 1)  # final state
     u0 = np.array([1, 2]*N).reshape(-1, 2).T  # np.ones((N, 2)) # controls
+
     x_c = []  # contains for the history of the state
     u_c = []
     t_c = []  # for the time

@@ -134,7 +134,7 @@ class FrozenLakeDQL():
         env.close()
 
         # Save policy
-        torch.save(policy_dqn.state_dict(), "MachineLearning/DeepQLearning/frozen_lake_dql.pt")
+        torch.save(policy_dqn.state_dict(), "ReinforcementLearning/DeepQLearning/frozen_lake_dql.pt")
 
         # Create new graph 
         plt.figure(1)
@@ -151,7 +151,7 @@ class FrozenLakeDQL():
         plt.plot(epsilon_history)
         
         # Save plots
-        folder_path = 'MachineLearning/DeepQLearning'
+        folder_path = 'ReinforcementLearning/DeepQLearning'
 
         plt.savefig(os.path.join(folder_path, f'frozen_lake_dql.png'))
 
@@ -216,7 +216,7 @@ class FrozenLakeDQL():
 
         # Load learned policy
         policy_dqn = DQN(in_states=num_states, h1_nodes=num_states, out_actions=num_actions) 
-        policy_dqn.load_state_dict(torch.load("MachineLearning/DeepQLearning/frozen_lake_dql.pt"))
+        policy_dqn.load_state_dict(torch.load("ReinforcementLearning/DeepQLearning/frozen_lake_dql.pt"))
         policy_dqn.eval()    # switch model to evaluation mode
 
         print('Policy (trained):')
@@ -266,3 +266,4 @@ if __name__ == '__main__':
     is_slippery = False
     frozen_lake.train(1000, is_slippery=is_slippery)
     frozen_lake.test(4, is_slippery=is_slippery)
+    

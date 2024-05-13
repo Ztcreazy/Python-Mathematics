@@ -41,7 +41,7 @@ def Q_Learning(episodes, is_training=True, render=False):
     if(is_training):
         q = np.zeros((len(pos_space), len(vel_space), env.action_space.n)) # 20*20*3
     else:
-        f = open('MachineLearning/RL01/mountain_car.pkl', 'rb')
+        f = open('ReinforcementLearning/RL01/mountain_car.pkl', 'rb')
         q = pickle.load(f)
         f.close()
 
@@ -98,7 +98,7 @@ def Q_Learning(episodes, is_training=True, render=False):
 
     # Save Q table to file
     if is_training:
-        f = open('MachineLearning/RL01/mountain_car.pkl','wb')
+        f = open('ReinforcementLearning/RL01/mountain_car.pkl','wb')
         pickle.dump(q, f)
         f.close()
 
@@ -106,7 +106,7 @@ def Q_Learning(episodes, is_training=True, render=False):
     for t in range(episodes):
         mean_rewards[t] = np.mean(rewards_per_episode[max(0, t-100):(t+1)])
     
-    folder_path = 'MachineLearning/RL01'
+    folder_path = 'ReinforcementLearning/RL01'
     plt.plot(mean_rewards)
     # plt.savefig(f'mountain_car.png')
     plt.savefig(os.path.join(folder_path, f'mountain_car.png'))

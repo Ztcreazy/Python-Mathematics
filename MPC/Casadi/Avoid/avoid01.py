@@ -125,8 +125,13 @@ if __name__ == '__main__':
     x_m = np.zeros((n_states, N+1))
     next_states = x_m.copy()
 
+
+
+    # !!!!
     xs = np.array([1.8, 2.4, 0.0]).reshape(-1, 1) # final state
     u0 = np.array([1,2]*N).reshape(-1, 2).T # np.ones((N, 2)) # controls
+
+
 
     x_c = [] # contains for the history of the state
     u_c = []
@@ -138,6 +143,7 @@ if __name__ == '__main__':
     mpciter = 0
     start_time = time.time()
     index_t = []
+
     while(np.linalg.norm(x0-xs)>1e-2 and mpciter-sim_time/T<0.0 and mpciter<50):
         
         ## set parameter
