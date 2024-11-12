@@ -17,7 +17,7 @@ def run(is_training=True, render=False):
     if(is_training):
         q = np.zeros((len(pos_space)+1, len(vel_space)+1, len(ang_space)+1, len(ang_vel_space)+1, env.action_space.n)) # init a 11x11x11x11x2 array
     else:
-        f = open('MachineLearning/CartPendulum/cartpole.pkl', 'rb')
+        f = open('ReinforcementLearning/CartPendulum/cartpole.pkl', 'rb')
         q = pickle.load(f)
         f.close()
 
